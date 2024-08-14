@@ -10,12 +10,21 @@ const InsightaChart = ({ address, apiUrl="https://insighta.cc/api/v1/summary", t
   const [error, setError] = useState("");
 
   useEffect(() => {
+    if(!address){
+        setLoading(false)
+        setError("no address input.")
+        setChartData({labels: [], datasets: []})
+        return;
+    }
+    setLoading(true);
+    
     axios.get(apiUrl+'/'+address, { timeout })
       .then(response => {
         const data = response.data.data;
         if(response.data.code !== 0 || Object.keys(response.data.data).length < 1){
           setError("No Data found.");
-          return;
+          setChartData({labels: [], datasets: []})
+          return
         }
         const labels = data.map(item => item.domain);
         const scores = data.map(item => item.score);
@@ -40,14 +49,21 @@ const InsightaChart = ({ address, apiUrl="https://insighta.cc/api/v1/summary", t
             }
           ]
         });
-        setLoading(false);
+        setError()
       })
       .catch(error => {
         setError(error.message);
+      }).finally(() => {
         setLoading(false);
       });
-  }, [address, apiUrl, timeout]);
 
+      return () => {
+        setLoading(false)
+        setError()
+        setChartData({labels: [], datasets: []})
+        };
+  }, [address, apiUrl, timeout]);
+  
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
 
@@ -72,5 +88,3 @@ const InsightaChart = ({ address, apiUrl="https://insighta.cc/api/v1/summary", t
 };
 
 export default InsightaChart;
-
-

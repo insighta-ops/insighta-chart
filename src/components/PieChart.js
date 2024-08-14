@@ -31,12 +31,7 @@ const PieChart = ({ data, options }) => {
       }
 
       return () => {
-        // TODO 
-        // console.log("useEffect,try to destroy chart: "+isMounted+", "+chartRef.current)
-        // if (chartRef.current){
-        //   chartRef.current.destroy();
-        //   setIsMounted(false);
-        // }
+        
       };
     }, [data, isMounted]);
 
